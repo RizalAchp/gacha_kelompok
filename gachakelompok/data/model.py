@@ -4,17 +4,16 @@ from math import ceil
 class Mahasiswa():
     def __init__(
         self,
-        id: int | None = None,
+        g_id: int | None = None,
         nama_gol: str | None = None,
-        mahasiswa_id: int | None = None,
+        m_id: int | None = None,
         nama: str | None = None,
         nim: str | None = None,
         kelamin: str | None = None
     ):
-        self.id = str(id+1) if id is not None else "empty"
+        self.gid = str(g_id+1) if g_id is not None else "empty"
         self.nama_gol = nama_gol.upper() if nama_gol is not None else "C"
-        self.mahasiswa_id = str(
-            mahasiswa_id+1) if mahasiswa_id is not None else "empty"
+        self.mid = str(m_id+1) if m_id is not None else "empty"
         self.nama = nama.capitalize() if nama is not None else "empty"
         self.nim = nim.upper() if nim is not None else "empty"
         self.kelamin = kelamin.upper() if kelamin is not None else "L"
@@ -38,7 +37,7 @@ class KelompokRandom():
         __data = [[]]
         idx = 0
         for i in range(kmlpk):
-            for k in range(jml):
+            for _ in range(jml):
                 __data[i].append(data[idx])
                 idx += 1
 
@@ -53,27 +52,26 @@ class KelompokRandom():
             if w.kelamin == "P"
         ]
         idx = 0
-        for i in range(kmlpk):
-            for k in range(jml - int(len(woman)/kmlpk)):
-                __data[i].append(data[idx])
+        for _i in range(kmlpk):
+            for _k in range(jml - int(len(woman)/kmlpk)):
+                __data[_i].append(data[idx])
                 idx += 1
-        w = 0
-        for n in __data:
-            if w == len(woman):
+        _w = 0
+        for _n in __data:
+            if _w == len(woman):
                 break
-            while len(n) < jml:
-                n.append(woman[w])
-                w += 1
+            while len(_n) < jml:
+                _n.append(woman[_w])
+                _w += 1
 
         return __data
 
 
-def list_obj(obj: object):
+def get_list_object(obj: object): 
     return [
-        val for k, val in vars(obj).items()
-        if not str(hex(id(val))) in str(val)
+        _v for _, _v in vars(obj).items() if str(hex(id(_v))) not in str(_v)
     ]
 
 
 if __name__ == "__main__":
-    print(list_obj(Mahasiswa('1', 'C', '2', 'rizal', 'e32201406', 'l')))
+    print(get_list_object(Mahasiswa(1, 'C', 2, 'rizal', 'e32201406', 'l')))

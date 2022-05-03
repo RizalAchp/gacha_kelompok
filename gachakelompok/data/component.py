@@ -38,7 +38,7 @@ class CommandList:
 
 
 Mode: TypeAlias = Literal[
-    "id", "nama_gol", "mahasiswa_id", "nama", "nim"
+    "gid", "nama_gol", "mid", "nama", "nim"
 ]
 ModeUrut = Union[str, Mode]
 Urut = get_args(Mode)

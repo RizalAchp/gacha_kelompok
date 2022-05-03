@@ -1,10 +1,12 @@
 import csv
 import os
 import random
-from gachakelompok.data.model import (
-    Mahasiswa, KelompokRandom, list_obj
+import re
+import time
+from .model import (
+    Mahasiswa, KelompokRandom, get_list_object
 )
-from gachakelompok.data.component import (
+from .component import (
     CommandsOperator, TheColors,
     StylePrinted, CommandList,
     Optional, Type, TracebackType,
@@ -12,6 +14,31 @@ from gachakelompok.data.component import (
 )
 
 HEADER = list(vars(Mahasiswa()))
+
+
+def bygol(obj: Mahasiswa):
+    return int(obj.gid)
+
+
+def bymid(obj: Mahasiswa):
+    return int(obj.mid)
+
+
+def byname(obj: Mahasiswa):
+    return obj.nama[:1]
+
+
+def bynim(obj: Mahasiswa):
+    return obj.nim[-4:]
+
+
+callback_sort = {
+    "gid": bygol,
+    "nama_gol": bygol,
+    "mid": bymid,
+    "nama": byname,
+    "nim": bynim
+}
 
 
 class MyCSV():
@@ -42,7 +69,7 @@ class MyCSV():
         for i, _d in enumerate(_data, start=1):
             _w.writerow([])
             _w.writerow([f">> KELOMPOK {i} <<"])
-            _w.writerows([list_obj(d) for d in _d])
+            _w.writerows([get_list_object(d) for d in _d])
 
     def write(self, _data: list[Mahasiswa]):
         """__write__.
@@ -115,13 +142,11 @@ class DataListCsv():
         """urutkan.
 
         :param sortby:
-        :type sortby: ModeUrut `( id, nama_gol, mahasiswa_id, nama, nim )`
+        :type sortby: ModeUrut `( g_id, nama_gol, m_id, nama, nim )`
         :param reverse: = literal[False] of literal[True]
         :type reverse: bool
         """
-        self.data.sort(
-            key=lambda m: int(vars(m)[sortby][1:]), reverse=reverse
-        )
+        self.data.sort(key=callback_sort[sortby], reverse=reverse)
 
     def check(self) -> bool:
         return False if self.data else True
@@ -134,7 +159,7 @@ class DataListCsv():
     def jumlah_mhs(self) -> int:
         return len(self.data) if len(self.data) else 0
 
-    @ property
+    @property
     def getdata(self) -> list[Mahasiswa]:
         """data."""
         return self.data
