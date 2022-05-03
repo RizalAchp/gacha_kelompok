@@ -1,6 +1,3 @@
 commonmark==0.9.1
-glfw==2.5.3
--e git+https://github.com/pyimgui/pyimgui.git@9e4470488666d4d45d6111cf6cbb2827ce994517#egg=imgui
 Pygments==2.12.0
-PyOpenGL==3.1.6
 rich==12.3.0
