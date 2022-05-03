@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+
+import os
+import re
+from gachakelompok.gachacli import main_cli, console, pretty
+from gachakelompok.gachagui import main_gui
+import argparse
+
+
+def setting_parser():
+    _parser = argparse.ArgumentParser(
+        os.path.basename(__file__), '%(prog)s [-h, --help, arguments]',
+        'Script untuk melakukan random Kelompok\nby: Rizal Achmad Pahlevi',
+        'ENJOY~!', add_help=True, exit_on_error=True
+    )
+    _parser.add_argument(
+        'argument', action='store', nargs='?',
+        metavar=("\n"
+                 "\tstart     -> starting the bot(cli mode)\n"
+                 "\tgui       -> start bot(gui mode)\n"
+                 )
+    )
+    return _parser, _parser.parse_args().argument if _parser.parse_args().argument else "None"
+
+
+def main(pars, args: str) -> int:
+    if re.search("^start.*|^gui.*", args):
+        if 'start'.lower() in args:
+            return main_cli()
+        elif 'gui'.lower() in args:
+            raise NotImplementedError("`gui` belum terimplementasi !TODO!")
+            return main_gui()
+    console.print(
+        f"\n[bold red]Argument : {args} tidak tersedia![/bold red]\n")
+    console.print(pars.format_help())
+    raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    pretty.install(console)
+    try:
+        parser, cli = setting_parser()
+        main(parser, cli)
+    except (SystemExit, KeyboardInterrupt):
+        console.print("[green b]Program Ditutup[green b]")
