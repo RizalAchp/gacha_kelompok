@@ -4,15 +4,15 @@
 
 1. for Windows Users
 
-   - you can download the executeable (.exe) on [this link](https://github.com/RizalAchp/gacha_kelompok/releases/download/v1.0.0-pre-release/gacha.exe)
+   - you can download the executeable (.exe) on [this link](https://github.com/RizalAchp/gacha_kelompok/releases/download/v1.0.0-release/gacha.exe)
    - or you can build it our self, and you can do what ever you want with the source code
-     1. Dwnload the project zip on [this link](https://github.com/RizalAchp/gacha_kelompok/archive/refs/tags/v1.0.0-pre-release.zip) and unzip or clone this project
+     1. Dwnload the project zip on [this link](https://github.com/RizalAchp/gacha_kelompok/archive/refs/tags/v1.0.0-release.zip) and unzip or clone this project
      2. run the `install.ps1` script. the script's will ensure you have python on your host pc and creating virtual environment for this project
         and prompting you if you wanna build the project or not.
      3. enjoy
 
 2. for Linux / \*Nix system
-   - do what ever you want, if you are using linux, you can do anything by yourself.
+   - deb package: [this link](https://github.com/RizalAchp/gacha_kelompok/releases/download/v1.0.0-release/gacha-1.0-0_amd64.deb)
 
 ## How To Use it?
 
