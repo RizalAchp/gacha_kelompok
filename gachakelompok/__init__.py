@@ -24,6 +24,7 @@ class Parser(argparse.ArgumentParser):
         self.add_argument(
             'start', action='store', nargs='?', type=str,
             help="Menjalankan Program Gacha secara Interaktif Mode",
+            default='start'
         )
         self.add_argument(
             "-r", "--read", type=str, nargs=1,
