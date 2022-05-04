@@ -1,7 +1,8 @@
 from .proses import (
     PRINT, INPUT, console, progress_wrapper, re, RandomData, DataListCsv,
     yes, show_table, show_table_kelompok, Mahasiswa, Urut, print_display_awal,
-    UB, CommandList, MyCSV, pretty, Optional
+    UB, CommandList, MyCSV, pretty, Optional, os,
+    read, delete, copy, rename, show
 )
 
 
@@ -42,7 +43,7 @@ def ask_back():
     raise SystemExit(0)
 
 
-def ask_save(ins, name, file):
+def ask_save(ins: DataListCsv | RandomData, name, file):
     save = INPUT(f"simpan data {name}? (y/N) \n ➜ ")
     if yes(save):
         ins.submit_data()
@@ -100,7 +101,13 @@ def tambah_data():
         nim = INPUT("nim(ex: e322..)            : ")
         kel = INPUT("kelamin(ex: L / W)         : ")
 
-        data.tambah(Mahasiswa(ID[gol], gol, data.jumlah_mhs, nam, nim, kel))
+        mh = None
+        if not gol:
+            mh = Mahasiswa(None, None, data.jumlah_mhs, nam, nim, kel)
+        else:
+            mh = Mahasiswa(ID[gol], gol, data.jumlah_mhs, nam, nim, kel)
+
+        data.tambah(mh)
         PRINT("mahasiswa tertambah.. ingin menambah lagi?",
               style="bold yellow")
         ykn = INPUT(
@@ -123,7 +130,7 @@ def ganti_data():
     while True:
         PRINT("masukan index dari data mahasiswa yang ingin diubah")
         idx = int(INPUT("index(ex: 0/1/2/3...!!HARUSANGKA!!) : "))
-        PRINT(f"masukkan data baru untuk mahasiswa {data.data[idx].nama}")
+        PRINT(f"masukkan data baru untuk mahasiswa {data.data[idx-1].nama}")
         data.data[idx].nama_gol = INPUT(
             "golongan(ex: a/b/c/d..)    : ").upper()
         data.data[idx].nama = INPUT(
@@ -178,11 +185,14 @@ def hapus_data():
     PRINT("Proses Menghapus Data Pada List Mahasiswa",
           new_line_start=True)
     while True:
-        show_table(data, "`Menghapus Data`")
+        if not show_table(data, "`Menghapus Data`"):
+            return ask_back()
         idx = INPUT(
             "Masukkan [green]Mhs-ID[/green] dari [green]Tabel Mahasiswa[green]"
-            " diatas yang ingin Dihapus\n ➜  "
+            " diatas yang ingin Dihapus, or any key to cancel\n ➜  "
         )
+        if not idx:
+            break
         mhdel = data.data[int(idx)-1]
         askdel = INPUT(
             "yakin menghapus mahasiswa:"

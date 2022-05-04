@@ -4,16 +4,16 @@ from math import ceil
 class Mahasiswa():
     def __init__(
         self,
-        g_id: int | None = None,
+        gid: int | str | None = None,
         nama_gol: str | None = None,
-        m_id: int | None = None,
+        mid: int | str | None = None,
         nama: str | None = None,
         nim: str | None = None,
         kelamin: str | None = None
     ):
-        self.gid = str(g_id+1) if g_id is not None else "empty"
+        self.gid = str(gid) if gid is not None else "empty"
         self.nama_gol = nama_gol.upper() if nama_gol is not None else "C"
-        self.mid = str(m_id+1) if m_id is not None else "empty"
+        self.mid = str(mid) if mid is not None else "empty"
         self.nama = nama.capitalize() if nama is not None else "empty"
         self.nim = nim.upper() if nim is not None else "empty"
         self.kelamin = kelamin.upper() if kelamin is not None else "L"
@@ -67,7 +67,7 @@ class KelompokRandom():
         return __data
 
 
-def get_list_object(obj: object): 
+def get_list_object(obj: object):
     return [
         _v for _, _v in vars(obj).items() if str(hex(id(_v))) not in str(_v)
     ]

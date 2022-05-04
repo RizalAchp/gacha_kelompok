@@ -1,17 +1,27 @@
-import csv
-import os
-import random
-import re
-import time
-from .model import (
-    Mahasiswa, KelompokRandom, get_list_object
-)
 from .component import (
     CommandsOperator, TheColors,
     StylePrinted, CommandList,
     Optional, Type, TracebackType,
     ModeUrut, warna, get_styled, Urut
 )
+from .model import (
+    Mahasiswa, KelompokRandom, get_list_object
+)
+from rich import box, pretty
+from rich.table import Table
+from rich.progress import Progress
+import csv
+import os
+import random
+import shutil
+import re
+import time
+import rich
+
+console = rich.get_console()
+PRINT = console.print
+INPUT = console.input
+
 
 HEADER = list(vars(Mahasiswa()))
 
@@ -40,6 +50,35 @@ callback_sort = {
     "nim": bynim
 }
 
+INVALID_FILETYPE_MSG = "Error: Invalid file format. %s must be a .csv file."
+INVALID_PATH_MSG = "Error: Invalid file path/name. Path %s does not exist."
+shortit = os.path.relpath
+
+
+def validate_file(file: str, file2: Optional[str] = None):
+    '''
+    validate file name and path.
+    '''
+    if not valid_path(file):
+        raise SystemExit(INVALID_PATH_MSG % (file))
+    elif not valid_filetype(file):
+        raise SystemExit(INVALID_FILETYPE_MSG % (file))
+    if file2:
+        if not valid_filetype(file2):
+            raise SystemExit(INVALID_FILETYPE_MSG % (file2))
+        return os.path.abspath(file), os.path.abspath(file2)
+    return os.path.abspath(file)
+
+
+def valid_filetype(file_name: str):
+    # validate file type
+    return file_name.endswith('.csv')
+
+
+def valid_path(path: str):
+    # validate file path
+    return os.path.exists(path)
+
 
 class MyCSV():
     """CSV."""
@@ -50,7 +89,12 @@ class MyCSV():
         :param _file:
         :rtype: None
         """
-        self.file = open(_file, 'w+')
+        if valid_path(_file):
+            self.file = _file
+        else:
+            with open(_file, 'x') as f:
+                f.close()
+            self.file = _file
 
     def __enter__(self):
         return self
@@ -61,15 +105,16 @@ class MyCSV():
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
-        self.close()
+        del self
 
     def write_random(self, _data: list[list[Mahasiswa]]):
-        _w = csv.writer(self.file, delimiter=',')
-        _w.writerow(HEADER)
-        for i, _d in enumerate(_data, start=1):
-            _w.writerow([])
-            _w.writerow([f">> KELOMPOK {i} <<"])
-            _w.writerows([get_list_object(d) for d in _d])
+        with open(self.file, "w") as f:
+            _w = csv.writer(f, delimiter=',')
+            _w.writerow(HEADER)
+            for i, _d in enumerate(_data, start=1):
+                _w.writerow([])
+                _w.writerow([f">> KELOMPOK {i} <<"])
+                _w.writerows([get_list_object(d) for d in _d])
 
     def write(self, _data: list[Mahasiswa]):
         """__write__.
@@ -77,21 +122,18 @@ class MyCSV():
         :param _data:
         :type _data: list[Mahasiswa]
         """
-        _w = csv.DictWriter(self.file, fieldnames=HEADER, delimiter=',')
-        _w.writeheader()
-        for d in _data:
-            _w.writerow(vars(d))
+        with open(self.file, 'w') as f:
+            _w = csv.DictWriter(f, HEADER, delimiter=',')
+            _w.writeheader()
+            for d in _data:
+                _w.writerow(vars(d))
 
     def read(self):
         """__read__."""
-        return [
-            Mahasiswa(**data) for data in csv.DictReader(
-                self.file, fieldnames=HEADER, delimiter=','
-            )
-        ]
-
-    def close(self):
-        self.file.close()
+        with open(self.file, 'r') as f:
+            return [
+                Mahasiswa(**data) for data in csv.DictReader(f)
+            ]
 
 
 class DataListCsv():
@@ -104,7 +146,9 @@ class DataListCsv():
         :rtype: None
         """
         with MyCSV(self.file_list) as _csv:
-            self.data = _csv.read()
+            data = _csv.read()
+
+            self.data = data
 
     def tambah(self, mhs: Mahasiswa) -> None:
         """tambah.
@@ -149,7 +193,7 @@ class DataListCsv():
         self.data.sort(key=callback_sort[sortby], reverse=reverse)
 
     def check(self) -> bool:
-        return False if self.data else True
+        return True if not self.data else False
 
     def submit_data(self) -> None:
         with MyCSV(self.file_list) as _csv:
@@ -157,7 +201,7 @@ class DataListCsv():
 
     @property
     def jumlah_mhs(self) -> int:
-        return len(self.data) if len(self.data) else 0
+        return int(len(self.data)+1) if len(self.data) else 1
 
     @property
     def getdata(self) -> list[Mahasiswa]:
@@ -204,6 +248,61 @@ class RandomData():
             self._data,
             self.ensure_woman
         )
+
+
+def read(fl: str):
+    file = validate_file(fl)
+    with MyCSV(file) as f:
+        console.print("mid\tnama\tnim")
+        for m in f.read():
+            console.print(f'[blue]{m.mid=}[/blue]', end="\t")
+            console.print(f'[b blue]{m.nama=}[/b blue]', end="\t")
+            console.print(f'[i blue]{m.nim=}[/i blue]')
+
+    return 0
+
+
+def show(dirs: str):
+    if not valid_path(dirs):
+        raise SystemExit("Error: No such directory found.")
+    # get text files in directory
+    files = [f for f in os.listdir(dirs) if valid_filetype(f)]
+    console.print(f"\n[green]{len(files)} csv[/green] files found.\n")
+    console.print('\n'.join(f' :book:  [u cyan]{f}[/u cyan]' for f in files))
+    return 0
+
+
+def delete(f: str):
+    file = validate_file(f)
+    if not isinstance(file, str):
+        raise SystemExit(1)
+
+    os.remove(file)
+    console.print(f"[b green]Successfully deleted {shortit(file)}.[/b green]")
+    return 0
+
+
+def copy(file1: str, file2: str):
+    f1, f2 = validate_file(file1, file2)
+    # copy file1 to file2
+    shutil.copyfile(src=f1, dst=f2)
+    console.print(
+        f"Successfully copied {shortit(f1)} to {shortit(f2)}."
+    )
+    return 0
+
+
+def rename(old: str, new: str):
+    # validate the file to be renamed
+    fold = validate_file(old)
+    fnew = os.path.abspath(new)
+    # validate the type of new file name
+    if not valid_filetype(fnew) or not isinstance(fold, str):
+        raise SystemExit(INVALID_FILETYPE_MSG % (fnew))
+    # renaming
+    shutil.move(fold, fnew)
+    print(f"Successfully renamed {shortit(fold)} to {shortit(fnew)}.")
+    return 0
 
 
 if __name__ == "__main__":

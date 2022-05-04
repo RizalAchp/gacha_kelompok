@@ -9,8 +9,7 @@ def main():
     # calling functions depending on type of argument
     parser = Parser()
     args = parser.parse_args()
-    g = args._get_kwargs()[0][1]
-    if g:
+    if args.start:
         return main_cli()
     if args.read:
         return read(args.read[0])
@@ -23,10 +22,7 @@ def main():
     elif args.rename:
         return rename(args.rename[0], args.rename[1])
 
-    console.print(
-        f"\n[bold red]Argument : {g} tidak tersedia![/bold red]\n")
-    console.print(parser.print_help())
-    return 1
+    return main_cli()
 
 
 if __name__ == "__main__":

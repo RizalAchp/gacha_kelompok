@@ -1,12 +1,4 @@
-import rich
-from rich.progress import Progress
-from rich.table import Table
-from rich import box, pretty
-
 from .data import *
-console = rich.get_console()
-PRINT = console.print
-INPUT = console.input
 
 
 def progress_wrapper(fun):
@@ -104,34 +96,34 @@ def yes(strs: str):
 def print_display_awal():
     console.clear()
     PRINT(
-        "[bold white on dark_red] :cat::cat: Gacha Kelompok :cat::cat: [/]",
+        "[bold yellow on dark_red] :cat::cat: Gacha Kelompok :cat::cat: [/]",
         justify="center")
     PRINT(
-        ":nerd_face: [dark_red](by Rizal Achmad Pahlevi)[/dark_red]"
-        " :nerd_face:",
+        "[yellow]:nerd_face: (by Rizal Achmad Pahlevi)"
+        " :nerd_face:[/yellow]",
         justify="center", end="\n\n")
     PRINT(
-        ":robot_face: [magenta]Apa Yang Ingin Anda Lakukan?"
-        " pilih command dibawah![/magenta]",
+        "[bold black on magenta]:robot_face: Apa Yang Ingin Anda Lakukan?"
+        " pilih command dibawah![/bold black on magenta]",
         new_line_start=True, end="\n\n"
     )
 
-    PRINT("[b black on green] :heavy_plus_sign:", end="\t")
+    PRINT("[b white on dark_green] :heavy_plus_sign:", end="\t")
     PRINT(
-        f"[b black on green]  {' | '.join(list(CommandList.Tambah))}  "
-        "[/b black on green]",
+        f"[b white on dark_green]  {' | '.join(list(CommandList.Tambah))}  "
+        "[/b white on dark_green]",
         sep="|", end="\t\t")
     PRINT(
         "➜  [green]tambahkan mahasiswa pada list[/green]"
     )
 
-    PRINT("[b black on yellow] :toolbox:", end="\t")
+    PRINT("[b white on dark_orange] :toolbox:", end="\t")
     PRINT(
-        f"[b black on yellow]  {' | '.join(list(CommandList.Ganti))}  "
-        "[/b black on yellow]",
+        f"[b white on dark_orange]  {' | '.join(list(CommandList.Ganti))}  "
+        "[/b white on dark_orange]",
         sep="|", end="\t\t")
     PRINT(
-        "➜  [yellow]edit mahasiswa pada list[/yellow]"
+        "➜  [orange1]edit mahasiswa pada list[/orange1]"
     )
 
     PRINT("[b white on navy_blue] :computer:", end="\t")
@@ -143,22 +135,22 @@ def print_display_awal():
         "➜  [blue]mulai gacha!![/blue]"
     )
 
-    PRINT("[b black on cyan] :bar_chart:", end="\t")
+    PRINT("[b white on dark_cyan] :bar_chart:", end="\t")
     PRINT(
-        f"[b black on cyan]  {' | '.join(list(CommandList.Urutkan))}  "
-        "[/b black on cyan]",
+        f"[b white on dark_cyan]  {' | '.join(list(CommandList.Urutkan))}  "
+        "[/b white on dark_cyan]",
         sep="|", end="\t\t")
     PRINT(
         "➜  [bright_cyan]urutkan list mahasiswa[/bright_cyan]"
     )
 
-    PRINT("[b black on bright_red] :warning-emoji:", end="\t")
+    PRINT("[b white on dark_violet] :warning-emoji:", end="\t")
     PRINT(
-        f"[b black on bright_red]  {' | '.join(list(CommandList.Hapus))}  "
-        "[/b black on bright_red]",
+        f"[b white on dark_violet]  {' | '.join(list(CommandList.Hapus))}  "
+        "[/b white on dark_violet]",
         sep="|", end="\t\t")
     PRINT(
-        "➜  [bright_red]hapus mahasiswa pada list[/bright_red]",
+        "➜  [dark_violet]hapus mahasiswa pada list[/dark_violet]",
         end="\n\n"
     )
 
