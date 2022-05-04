@@ -2,6 +2,10 @@
 ./__pycache__
 __pycache__
 
+dist
+build
 envgacha
+venv
+**/venv/**
 **/envgacha
 tes
